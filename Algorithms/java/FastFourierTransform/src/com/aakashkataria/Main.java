@@ -1,10 +1,7 @@
-//
 //  main.java
 //  FastFourierTransform
-//
 //  Created by Aakash Kataria on 19/10/18.
 //  Copyright © 2018 Aakash Kataria. All rights reserved.
-//
 
 package com.aakashkataria;
 
