@@ -46,13 +46,25 @@ class Complex {
         return new Complex(this.real * number.real - this.imaginary * number.imaginary,
                 this.real * number.imaginary + this.imaginary * number.real);
     }
+
+    public Complex getConjugate(){
+        return new Complex(this.real, -1 * this.imaginary);
+    }
+
+    public Complex scalerDivide(Complex number){
+        return new Complex(this.real/number.real, this.imaginary/number.real);
+    }
+
+    public Complex divide(Complex number){
+        return this.multiply(number.getConjugate()).scalerDivide(number.multiply(number.getConjugate()));
+    }
 }
 
 public class Main {
 
     private static Scanner scanner;
     private static int coefficientCount;
-    private static ArrayList<Integer> coefficients;
+    private static ArrayList<Complex> coefficients;
 
     public static double log2(int n) {
         return (Math.log(n) / Math.log(2));
@@ -61,37 +73,37 @@ public class Main {
     public static void main(String[] args) {
         scanner = new Scanner(System.in);
         coefficientCount = scanner.nextInt();
-        coefficients = new ArrayList<>(Collections.nCopies(coefficientCount, 0));
+        coefficients = new ArrayList<>(Collections.nCopies(coefficientCount, new Complex(0,0)));
         for (int i = 0; i < coefficientCount; i++) {
-            coefficients.set(i, scanner.nextInt());
+            coefficients.set(i, new Complex(scanner.nextDouble(), 0));
         }
         if (Math.pow(2, log2(coefficients.size())) != coefficients.size()){
             int newSize = (int) Math.pow(2, Math.floor(log2(coefficients.size())) + 1);
             for (int i = coefficientCount; i < newSize; i++){
-                coefficients.add(0);
+                coefficients.add(new Complex(0, 0));
             }
             coefficientCount = coefficients.size();
         }
         ArrayList<Complex> points = fft(coefficients, coefficientCount);
 
-        for (Complex point: points){
-            System.out.println("" + point.getReal() + " i" + point.getImaginary());
+        for (int i = 0; i < coefficientCount; i++){
+            System.out.println("" + points.get(i).getReal() + " " + points.get(i).getImaginary() + "i");
         }
     }
 
-    private static ArrayList<Complex> fft(ArrayList<Integer> coefficients, int coefficientCount) {
+    private static ArrayList<Complex> fft(ArrayList<Complex> coefficients, int coefficientCount) {
         ArrayList<Complex> res = new ArrayList<>(Collections.nCopies(coefficientCount, new Complex(0, 0)));
         if (coefficientCount == 1){
-            res.set(0, new Complex(coefficients.get(0),0));
+            res.set(0, coefficients.get(0));
             return res;
         }
-        ArrayList<Integer> evenCoefficients = new ArrayList<>();
-        ArrayList<Integer> oddCoefficients = new ArrayList<>();
+        ArrayList<Complex> evenCoefficients = new ArrayList<>(coefficientCount/2);
+        ArrayList<Complex> oddCoefficients = new ArrayList<>(coefficientCount/2);
         Complex omega = new Complex(1, 0);
         Complex nthRoot = new Complex(Math.cos((2*Math.PI)/coefficientCount), Math.sin((2*Math.PI)/coefficientCount));
-        for (int i = 0; i < coefficientCount; i += 2){
-            evenCoefficients.add(coefficients.get(i));
-            oddCoefficients.add(coefficients.get(i+1));
+        for (int i = 0; i < coefficientCount/2; i++){
+            evenCoefficients.add(coefficients.get(2*i));
+            oddCoefficients.add(coefficients.get(2*i + 1));
         }
 
         ArrayList<Complex> a_e_x2 = fft(evenCoefficients, coefficientCount/2);
@@ -107,4 +119,5 @@ public class Main {
 
         return res;
     }
+
 }
