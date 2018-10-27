@@ -130,6 +130,12 @@ vector<int> multiply(vector<int> v1, vector<int> v2){
 int main(int argc, const char * argv[]) {
     int n;
     cin>>n;
+    
+    // n is degree of polynomial, if degree of the two 
+    // polynomials are not same then make sure to pad 0 
+    // as coefficients to make both of the polynomial's 
+    // degrees equal
+
     vector<int> p1(n), p2(n);
     for (int i = 0; i < n; i++)
         cin>>p1[i];
